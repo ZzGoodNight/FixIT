@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FixIT - Cервіс Авто</title>
+    <!-- Підключаємо Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Підключаємо наші власні стилі -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Підключаємо шрифт Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <!-- ===== БІЧНЕ МЕНЮ ТА ФОН ===== -->
+
+    <!-- Фон-затемнення (Overlay) -->
+    <div
+      id="menu-overlay"
+      class="fixed inset-0 z-30 bg-black bg-opacity-50 hidden"
+    ></div>
+
+    <!-- Бічне меню -->
+    <div
+      id="mobile-menu"
+      class="fixed top-0 right-0 h-full w-64 bg-white z-40 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out"
+    >
+      <div class="p-4">
+        <!-- Кнопка Закрити (Хрестик) -->
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-indigo-600">FixIT Меню</h3>
+          <button id="close-menu-btn" class="text-gray-500 hover:text-gray-800">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <!-- Посилання в меню (Статичні) -->
+        <nav id="menu-links" class="flex flex-col space-y-2">
+          <button
+            class="nav-btn-open-booking-modal w-full text-left text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            Записатись
+          </button>
+          <button
+            class="nav-btn-open-slots-modal w-full text-left text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            Вільні місця
+          </button>
+          <button
+            class="nav-btn-goto-login w-full text-left text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium"
+          >
+            Вхід / Реєстрація
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- ===== МОДАЛЬНІ ВІКНА (Сховані за замовчуванням) ===== -->
+
+    <!-- 1. Модальне вікно "Записатись на сервіс" -->
+    <div
+      id="booking-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden"
+    >
+      <div class="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg m-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold text-gray-900">
+            Запис на обслуговування
+          </h3>
+          <button
+            id="close-booking-modal"
+            class="text-gray-500 hover:text-gray-800"
+          >
+            <!-- Іконка "хрестик" (SVG) -->
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <!-- Форма запису (поки "без користувачів") -->
+        <form id="booking-form" class="space-y-4">
+          <div>
+            <label
+              for="book-name"
+              class="block text-sm font-medium text-gray-700"
+              >Ваше ім'я</label
+            >
+            <input
+              type="text"
+              id="book-name"
+              required
+              class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label
+              for="book-phone"
+              class="block text-sm font-medium text-gray-700"
+              >Ваш телефон</label
+            >
+            <input
+              type="tel"
+              id="book-phone"
+              required
+              class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label
+              for="book-service"
+              class="block text-sm font-medium text-gray-700"
+              >Вид робіт</label
+            >
+            <select
+              id="book-service"
+              required
+              class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Оберіть послугу...</option>
+              <option value="oil_change">Заміна масла</option>
+              <option value="diagnostics">Діагностика двигуна</option>
+              <option value="tires">Шиномонтаж</option>
+              <option value="other">Інше</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="book-date"
+                class="block text-sm font-medium text-gray-700"
+                >Дата</label
+              >
+              <input
+                type="date"
+                id="book-date"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="book-time"
+                class="block text-sm font-medium text-gray-700"
+                >Час</label
+              >
+              <input
+                type="time"
+                id="book-time"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none"
+            >
+              Відправити заявку
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. Модальне вікно "Вільні місця" (Заглушка) -->
+    <div
+      id="slots-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden"
+    >
+      <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-lg m-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold text-gray-900">Вільні слоти</h3>
+          <button
+            id="close-slots-modal"
+            class="text-gray-500 hover:text-gray-800"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-gray-700">
+          Тут буде динамічний календар, який показуватиме вільні години для
+          запису.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== ГОЛОВНА СТОРІНКА (Visible by default) ===== -->
+    <div id="main-page-content" class="page active-page">
+      <!-- 1. Шапка (header) -->
+      <header class="bg-white shadow-md">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <!-- Логотип -->
+            <div class="flex-shrink-0 flex items-center space-x-2">
+              <img
+                class="w-20 h-20"
+                src="images/4230893.png"
+                alt="FixIT Icon"
+              />
+              <span class="text-2xl font-bold text-indigo-600">FixIT</span>
+            </div>
+
+            <!-- Навігаційне меню (кнопка) -->
+            <div>
+              <button
+                id="hamburger-btn"
+                class="hamburger-btn text-gray-600 hover:text-gray-900 focus:outline-none"
+              >
+                <span class="sr-only">Відкрити меню</span>
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 2. Основний блок (main) -->
+      <main>
+        <!-- Hero секція -->
+        <div
+          class="relative bg-indigo-800 text-white py-20 md:py-32 overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 opacity-10 flex items-center justify-center pointer-events-none"
+          >
+            <img
+              src="images/eva.jpg"
+              alt="Car Service Background"
+              class="w-full px-4 max-w-4xl h-auto object-contain"
+            />
+          </div>
+          <div class="relative w-full px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-6xl md:text-8xl font-bold">FixIT</h1>
+            <h2 class="mt-4 text-4xl md:text-6xl font-semibold">
+              Ваш автомобіль заслуговує на краще
+            </h2>
+            <p class="mt-4 text-xl md:text-2xl text-indigo-200">
+              Професійне обслуговування та ремонт.
+            </p>
+            <button
+              class="nav-btn-open-booking-modal mt-8 px-8 py-3 bg-white text-indigo-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 transition duration-300"
+            >
+              Записатись на сервіс
+            </button>
+          </div>
+        </div>
+
+        <!-- Секція "Про нас" (інформаційні картки) -->
+        <section id="about" class="py-16 bg-white">
+          <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+              <h2 class="text-3xl font-bold text-gray-900">Про "FixIT"</h2>
+              <p class="mt-4 text-lg text-gray-600">
+                Ми — команда сертифікованих професіоналів, яка присвятила себе
+                якості та надійності.
+              </p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+              <!-- Картка 1 -->
+              <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
+                <div class="flex items-center space-x-3 mb-3">
+                  <img
+                    class="w-8 h-8"
+                    src="images/depositphotos_26762333-stock-illustration-crossed-wrenches.jpg"
+                    alt="Equipment Icon"
+                  />
+                  <h3 class="text-xl font-semibold text-gray-900">
+                    Сучасне обладнання
+                  </h3>
+                </div>
+                <p class="mt-2 text-gray-600">
+                  Ми використовуємо тільки новітнє діагностичне обладнання.
+                </p>
+              </div>
+              <!-- Картка 2 -->
+              <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
+                <div class="flex items-center space-x-3 mb-3">
+                  <img
+                    class="w-8 h-8"
+                    src="images/depositphotos_26762333-stock-illustration-crossed-wrenches.jpg"
+                    alt="Masters Icon"
+                  />
+                  <h3 class="text-xl font-semibold text-gray-900">
+                    Кваліфіковані майстри
+                  </h3>
+                </div>
+                <p class="mt-2 text-gray-600">
+                  Наші механіки мають багаторічний досвід роботи.
+                </p>
+              </div>
+              <!-- Картка 3 -->
+              <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
+                <div class="flex items-center space-x-3 mb-3">
+                  <img
+                    class="w-8 h-8"
+                    src="images/depositphotos_26762333-stock-illustration-crossed-wrenches.jpg"
+                    alt="Quality Icon"
+                  />
+                  <h3 class="text-xl font-semibold text-gray-900">
+                    Гарантія якості
+                  </h3>
+                </div>
+                <p class="mt-2 text-gray-600">
+                  На всі виконані роботи надається офіційна гарантія.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- 3. Нижній колонтитул (footer) -->
+      <footer class="bg-gray-800 text-gray-300 py-12 mt-0">
+        <!-- mt-0, щоб він був одразу під секцією "Про нас" -->
+        <div
+          class="w-full px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">FixIT</h3>
+            <p class="text-sm">
+              Ваш надійний партнер з ремонту та обслуговування автомобілів.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">Контакти</h3>
+            <ul class="space-y-2 text-sm">
+              <li>Телефон: (044) 123-45-67</li>
+              <li>Email: info@fixit.ua</li>
+              <li>Адреса: м. Київ, вул. Автомобілістів, 1</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white mb-4">Години роботи</h3>
+            <ul class="space-y-2 text-sm">
+              <li>Пн - Пт: 9:00 - 19:00</li>
+              <li>Сб: 10:00 - 17:00</li>
+              <li>Нд: Вихідний</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm">
+          <p>&copy; 2025 FixIT. Всі права захищено.</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ===== СТОРІНКИ АВТЕНТИФІКАЦІЇ (Сховані) ===== -->
+    <div
+      id="auth-container"
+      class="hidden min-h-screen items-center justify-center p-4"
+    >
+      <div
+        id="page-container"
+        class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg"
+      >
+        <!-- Сторінка Входу -->
+        <div id="login-page" class="page">
+          <h2 class="text-2xl font-bold text-center text-gray-900">
+            Вхід для клієнтів та майстрів
+          </h2>
+          <form id="login-form" class="mt-6 space-y-6">
+            <div>
+              <label
+                for="login-email"
+                class="block text-sm font-medium text-gray-700"
+                >Логін або Email</label
+              >
+              <input
+                id="login-email"
+                name="email"
+                type="text"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="login-password"
+                class="block text-sm font-medium text-gray-700"
+                >Пароль</label
+              >
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div id="login-error" class="error-message">
+              Невірний логін або пароль.
+            </div>
+            <div>
+              <button
+                type="submit"
+                class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none"
+              >
+                Увійти
+              </button>
+            </div>
+          </form>
+          <p class="mt-4 text-sm text-center text-gray-600">
+            Немає акаунту?
+            <button
+              id="goto-register-btn"
+              class="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Зареєструватися
+            </button>
+          </p>
+          <button
+            class="nav-btn-goto-main w-full mt-4 text-sm text-indigo-600 hover:text-indigo-500"
+          >
+            &larr; На головну
+          </button>
+        </div>
+
+        <!-- Сторінка Реєстрації -->
+        <div id="register-page" class="page">
+          <h2 class="text-2xl font-bold text-center text-gray-900">
+            Реєстрація клієнта
+          </h2>
+          <form id="register-form" class="mt-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="register-name"
+                  class="block text-sm font-medium text-gray-700"
+                  >Ім'я</label
+                >
+                <input
+                  id="register-name"
+                  name="name"
+                  type="text"
+                  required
+                  class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <div>
+                <label
+                  for="register-lastname"
+                  class="block text-sm font-medium text-gray-700"
+                  >Фамілія</label
+                >
+                <input
+                  id="register-lastname"
+                  name="lastname"
+                  type="text"
+                  required
+                  class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                for="register-login"
+                class="block text-sm font-medium text-gray-700"
+                >Логін (для входу)</label
+              >
+              <input
+                id="register-login"
+                name="login"
+                type="text"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="register-email"
+                class="block text-sm font-medium text-gray-700"
+                >Пошта (Email)</label
+              >
+              <input
+                id="register-email"
+                name="email"
+                type="email"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="register-password"
+                class="block text-sm font-medium text-gray-700"
+                >Пароль (мін. 6 символів)</label
+              >
+              <input
+                id="register-password"
+                name="password"
+                type="password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label
+                for="register-password-confirm"
+                class="block text-sm font-medium text-gray-700"
+                >Підтвердіть пароль</label
+              >
+              <input
+                id="register-password-confirm"
+                name="password-confirm"
+                type="password"
+                required
+                class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div id="password-error" class="error-message">
+              Паролі не збігаються.
+            </div>
+            <div id="register-error" class="error-message">
+              Помилка реєстрації.
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none"
+              >
+                Зареєструватися
+              </button>
+            </div>
+          </form>
+          <p class="mt-4 text-sm text-center text-gray-600">
+            Вже маєте акаунт?
+            <button
+              id="goto-login-btn"
+              class="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Увійти
+            </button>
+          </p>
+          <button
+            class="nav-btn-goto-main w-full mt-4 text-sm text-indigo-600 hover:text-indigo-500"
+          >
+            &larr; На головну
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 
+Підключаємо наш JavaScript-файл.
+-->
+    <script type="module" src="script.js" defer></script>
+  </body>
+</html>
