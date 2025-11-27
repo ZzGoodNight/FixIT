@@ -1,0 +1,47 @@
+/* HERO SECTION */
+.hero-section {
+  position: relative;
+  height: 85vh; /* Висота екрану */
+  /* Фото гаража на фоні з затемненням */
+  background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.75)),
+    url("https://images.unsplash.com/photo-1486006920555-c77dcf18193c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Паралакс ефект */
+}
+
+.hero-content {
+  z-index: 2;
+  animation: fadeInUp 1s ease-out;
+}
+
+/* Анімація появи тексту */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* КАРТКИ ПОСЛУГ */
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.icon-box {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

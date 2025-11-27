@@ -1,0 +1,26 @@
+/* Робимо меню трохи прозорим при скролі (можна додати JS для ефекту, поки просто стилі) */
+.navbar {
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  font-weight: 500;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary-color) !important;
+}
+
+/* Кнопка бургера при фокусі */
+.navbar-toggler:focus {
+  box-shadow: none;
+  outline: 2px solid var(--primary-color);
+}
